@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MARKET BOT</title>
+    <!-- Favicon & Apple Touch Icons -->
+    <link rel="icon" type="image/png" href="https://magic-scripts.vercel.app/circlemarket.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://magic-scripts.vercel.app/180x180market.png">
+    <link rel="apple-touch-icon-precomposed" href="https://magic-scripts.vercel.app/circlemarket.png">
+    
+    <!-- Microsoft Tile -->
+    <meta name="msapplication-TileImage" content="https://magic-scripts.vercel.app/circlemarket.png">
+    <meta name="msapplication-TileColor" content="#640D9A">
+    
+    <!-- Theme Color for Browser Address Bar -->
+    <meta name="theme-color" content="#640D9A">
+    
+    <!-- Dynamic Screen Source Metadata Attributes -->
+    <meta name="viewport-width" content="dynamic">
+    <meta name="viewport-height" content="dynamic">
+    <meta name="device-plot-zone" content="detecting">
+
+    <!-- Professional Meta Tags -->
+    <meta name="description" content="Market Bot — real and official signals bot.">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph Tags -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://market-bot.vercel.app/">
+    <meta property="og:title" content="MARKET QUEEN">
+    <meta property="og:description" content="Market Queen — real and official signals bot.">
+    <meta property="og:image" content="https://market-bot.vercel.app/dps.png">
+    <meta property="og:image:secure_url" content="https://market-bot.vercel.app/dps.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+
+    <!-- Twitter Preview Tags -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="MARKET BOT">
+    <meta name="twitter:description" content="Market Bot — real and official signals bot.">
+    <meta name="twitter:image" content="https://market-bot.vercel.app/dps.png">
+    <style>
+        :root {
+            --bg-dark: #0b0914;
+            --card-bg: rgba(22, 17, 39, 0.75);
+            --primary-gradient: linear-gradient(135deg, #E120E4 0%, #C54FDA 50%, #9B0BE1 100%);
+            --accent-purple: #C54FDA;
+            --text-light: #F3F0FF;
+            --text-dim: #A39BB5;
+            --up-green: #00E676;
+            --down-red: #FF3D00;
+            --border-glow: rgba(225, 32, 228, 0.3);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(225, 32, 228, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 85% 85%, rgba(155, 11, 225, 0.15) 0%, transparent 40%);
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 440px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-glow);
+            border-radius: 24px;
+            padding: 24px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6),
+                        0 0 20px rgba(225, 32, 228, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .logo-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .logo-img {
+            width: 65px;
+            height: 65px;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 0 10px rgba(225, 32, 228, 0.5));
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+
+        .brand-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+        }
+
+        .loader-spin {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(225, 32, 228, 0.1);
+            border-left-color: var(--accent-purple);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 30px 0;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            letter-spacing: 2px;
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .lock-icon-wrap {
+            background: rgba(225, 32, 228, 0.1);
+            border: 1px solid var(--border-glow);
+            padding: 16px;
+            border-radius: 50%;
+            margin-bottom: 15px;
+            color: var(--accent-purple);
+        }
+
+        .id-card {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px dashed var(--border-glow);
+            border-radius: 12px;
+            padding: 12px 16px;
+            width: 100%;
+            text-align: center;
+            margin: 15px 0;
+        }
+
+        .id-title {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .id-value {
+            font-family: monospace;
+            font-size: 0.95rem;
+            color: var(--accent-purple);
+            letter-spacing: 1px;
+            word-break: break-all;
+        }
+
+        .contact-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 14px;
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: 700;
+            text-decoration: none;
+            margin-top: 10px;
+            box-shadow: 0 4px 15px rgba(155, 11, 225, 0.4);
+            transition: transform 0.2s;
+        }
+
+        .contact-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Fully Custom Scrollable Dark Dropdown */
+        .custom-dropdown {
+            position: relative;
+            width: 100%;
+            margin-bottom: 20px;
+            user-select: none;
+        }
+
+        .dropdown-selected {
+            width: 100%;
+            padding: 14px 18px;
+            background: rgba(15, 12, 29, 0.9);
+            border: 1px solid rgba(225, 32, 228, 0.4);
+            border-radius: 14px;
+            color: var(--text-light);
+            font-size: 0.95rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-selected:hover {
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 12px rgba(225, 32, 228, 0.3);
+        }
+
+        .dropdown-arrow {
+            width: 20px;
+            height: 20px;
+            fill: var(--accent-purple);
+            transition: transform 0.3s ease;
+        }
+
+        .custom-dropdown.open .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-options {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            right: 0;
+            background: #130E26;
+            border: 1px solid rgba(225, 32, 228, 0.3);
+            border-radius: 14px;
+            overflow-x: hidden;
+            overflow-y: auto;
+            max-height: 240px;
+            display: none;
+            z-index: 100;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+        }
+
+        .dropdown-options::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .dropdown-options::-webkit-scrollbar-thumb {
+            background: var(--accent-purple);
+            border-radius: 10px;
+        }
+
+        .dropdown-options::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .custom-dropdown.open .dropdown-options {
+            display: block;
+            animation: dropdownFade 0.2s ease-out;
+        }
+
+        @keyframes dropdownFade {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .option {
+            padding: 12px 18px;
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .option:last-child {
+            border-bottom: none;
+        }
+
+        .option:hover, .option.active {
+            background: rgba(225, 32, 228, 0.15);
+            color: var(--accent-purple);
+        }
+
+        .signal-display {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 210px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .direction-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 12px 28px;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #fff;
+        }
+
+        .direction-badge.UP {
+            background-color: var(--up-green);
+            color: #000;
+            box-shadow: 0 0 20px rgba(0, 230, 118, 0.4);
+        }
+
+        .direction-badge.DOWN {
+            background-color: var(--down-red);
+            color: #fff;
+            box-shadow: 0 0 20px rgba(255, 61, 0, 0.4);
+        }
+
+        .timer-container {
+            position: relative;
+            width: 110px;
+            height: 110px;
+            margin: 10px 0;
+            display: none;
+        }
+
+        .timer-svg {
+            transform: rotate(-90deg);
+            width: 100%;
+            height: 100%;
+        }
+
+        .timer-bg {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.1);
+            stroke-width: 8;
+        }
+
+        .timer-progress {
+            fill: none;
+            stroke: url(#gradient);
+            stroke-width: 8;
+            stroke-linecap: round;
+            stroke-dasharray: 283;
+            stroke-dashoffset: 0;
+            transition: stroke-dashoffset 1s linear;
+        }
+
+        .timer-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--text-light);
+        }
+
+        .btn-main {
+            width: 100%;
+            padding: 16px;
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: 14px;
+            color: white;
+            font-size: 1.05rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(155, 11, 225, 0.4);
+            transition: transform 0.2s, opacity 0.2s;
+        }
+
+        .btn-main:active {
+            transform: scale(0.98);
+        }
+
+        .btn-copy {
+            width: 100%;
+            padding: 12px;
+            background: transparent;
+            border: 1px solid var(--border-glow);
+            border-radius: 12px;
+            color: var(--text-light);
+            font-weight: 600;
+            margin-top: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: background 0.3s;
+        }
+
+        .btn-copy:hover {
+            background: rgba(225, 32, 228, 0.1);
+        }
+
+        .timeframe-tag {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            margin-top: 8px;
+            font-weight: 600;
+        }
+
+        .placeholder-text {
+            color: var(--text-dim);
+            font-size: 0.95rem;
+            text-align: center;
+        }
+
+        svg.icon {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Header Logo -->
+        <div class="logo-header">
+            <img src="https://magic-scripts.vercel.app/circlemarket.png" alt="Market Logo" class="logo-img" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'%23C54FDA\'><path d=\'M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5\'/></svg>'">
+            <h1 class="brand-title">MARKET BOT</h1>
+        </div>
+
+        <!-- 1. LOADING SCREEN -->
+        <div id="loadingScreen" class="screen active">
+            <div class="loader-spin"></div>
+            <div class="loading-text">PLEASE WAIT...</div>
+        </div>
+
+        <!-- 2. LOCK SCREEN -->
+        <div id="lockScreen" class="screen">
+            <div class="lock-icon-wrap">
+                <svg class="icon" style="width:32px; height:32px;" viewBox="0 0 24 24">
+                    <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
+                </svg>
+            </div>
+            <h3 style="margin-bottom: 5px;">Access Locked</h3>
+            <p style="color: var(--text-dim); font-size: 0.85rem; text-align: center;">Contact admin with your unique ID to get access.</p>
+            
+            <div class="id-card">
+                <div class="id-title">Your Unique ID</div>
+                <div id="displayUserId" class="id-value">Generating...</div>
+            </div>
+
+            <a href="https://t.me/Magic_Scripts" target="_blank" class="contact-btn">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.12.02-1.96 1.25-5.54 3.69-.52.36-1 .53-1.42.52-.47-.01-1.37-.26-2.03-.48-.82-.27-1.47-.42-1.42-.88.03-.24.37-.49 1.02-.75 3.98-1.73 6.64-2.87 7.97-3.44 3.8-1.6 4.59-1.88 5.1-1.89.11 0 .37.03.54.17.14.12.18.28.2.45-.02.07-.02.13-.03.22z"/></svg>
+                Contact @Magic_Scripts
+            </a>
+            <span style="font-size: 0.75rem; color: var(--text-dim); margin-top: 8px;">Contact to unlock</span>
+        </div>
+
+        <!-- 3. MAIN APP SCREEN -->
+        <div id="mainScreen" class="screen">
+            <!-- Custom Styled Dark Dropdown Menu -->
+            <div class="custom-dropdown" id="customDropdown">
+                <div class="dropdown-selected" id="dropdownSelected">
+                    <span id="selectedText">USD/PKR (OTC)</span>
+                    <svg class="dropdown-arrow" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                </div>
+                <div class="dropdown-options" id="dropdownOptions">
+                    <div class="option" data-value="USD/PKR (OTC)">USD/PKR (OTC)</div>
+                    <div class="option" data-value="USD/ARS (OTC)">USD/ARS (OTC)</div>
+                    <div class="option" data-value="USD/CAD (OTC)">USD/CAD (OTC)</div>
+                    <div class="option" data-value="USD/BRL (OTC)">USD/BRL (OTC)</div>
+                    <div class="option" data-value="USD/DZD (OTC)">USD/DZD (OTC)</div>
+                    <div class="option" data-value="USD/NZD (OTC)">USD/NZD (OTC)</div>
+                    <div class="option" data-value="NZD/CAD (OTC)">NZD/CAD (OTC)</div>
+                    <div class="option" data-value="USD/BDT (OTC)">USD/BDT (OTC)</div>
+                    <div class="option" data-value="USD/MXN (OTC)">USD/MXN (OTC)</div>
+                    <div class="option" data-value="USD/TRY (OTC)">USD/TRY (OTC)</div>
+                    <div class="option" data-value="NZD/JPY (OTC)">NZD/JPY (OTC)</div>
+                    <div class="option" data-value="Solana (OTC)">Solana (OTC)</div>
+                    <div class="option" data-value="Celestia (OTC)">Celestia (OTC)</div>
+                    <div class="option" data-value="TRON (OTC)">TRON (OTC)</div>
+                    <div class="option" data-value="Trump (OTC)">Trump (OTC)</div>
+                    <div class="option" data-value="Gold (OTC)">Gold (OTC)</div>
+                    <div class="option" data-value="Silver (OTC)">Silver (OTC)</div>
+                    <div class="option" data-value="UScrude (OTC)">UScrude (OTC)</div>
+                    <div class="option" data-value="UKBrent (OTC)">UKBrent (OTC)</div>
+                    <div class="option" data-value="Johnson & Johnson (OTC)">Johnson & Johnson (OTC)</div>
+                    <div class="option" data-value="Intel (OTC)">Intel (OTC)</div>
+                    <div class="option" data-value="FACEBOOK INC (OTC)">FACEBOOK INC (OTC)</div>
+                    <div class="option" data-value="Pfizer Inc (OTC)">Pfizer Inc (OTC)</div>
+                    <div class="option" data-value="Microsoft (OTC)">Microsoft (OTC)</div>
+                    <div class="option" data-value="American Express (OTC)">American Express (OTC)</div>
+                </div>
+            </div>
+
+            <!-- Signal Display Output Area -->
+            <div class="signal-display">
+                <div id="placeholder" class="placeholder-text">Click "GET SIGNAL" to analyze market</div>
+                
+                <div id="directionBadge" class="direction-badge" style="display: none;"></div>
+
+                <!-- Circular SVG Countdown Timer -->
+                <div id="timerContainer" class="timer-container">
+                    <svg class="timer-svg" viewBox="0 0 100 100">
+                        <defs>
+                            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#E120E4" />
+                                <stop offset="100%" stop-color="#9B0BE1" />
+                            </linearGradient>
+                        </defs>
+                        <circle class="timer-bg" cx="50" cy="50" r="45"></circle>
+                        <circle id="timerProgress" class="timer-progress" cx="50" cy="50" r="45"></circle>
+                    </svg>
+                    <div id="timerText" class="timer-text">60</div>
+                </div>
+
+                <div id="timeframeTag" class="timeframe-tag" style="display: none;">TIME: 1M</div>
+            </div>
+
+            <!-- Action Buttons -->
+            <button id="getSignalBtn" class="btn-main">GET SIGNAL</button>
+            <button id="copyBtn" class="btn-copy">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                COPY SIGNAL
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const loadingScreen = document.getElementById('loadingScreen');
+        const lockScreen = document.getElementById('lockScreen');
+        const mainScreen = document.getElementById('mainScreen');
+        const displayUserId = document.getElementById('displayUserId');
+        
+        const customDropdown = document.getElementById('customDropdown');
+        const dropdownSelected = document.getElementById('dropdownSelected');
+        const selectedText = document.getElementById('selectedText');
+        const options = document.querySelectorAll('.option');
+
+        const getSignalBtn = document.getElementById('getSignalBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const placeholder = document.getElementById('placeholder');
+        const directionBadge = document.getElementById('directionBadge');
+        const timerContainer = document.getElementById('timerContainer');
+        const timerProgress = document.getElementById('timerProgress');
+        const timerText = document.getElementById('timerText');
+        const timeframeTag = document.getElementById('timeframeTag');
+
+        const arrowUpSvg = `<svg class="icon" viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg>`;
+        const arrowDownSvg = `<svg class="icon" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>`;
+
+        let currentSignalData = null;
+        let countdownInterval = null;
+        let selectedPairValue = "USD/PKR (OTC)";
+
+        // 1. INITIALIZE PERSISTED PAIR FROM LOCALSTORAGE
+        function initSelectedPair() {
+            const savedPair = localStorage.getItem('selected_pair');
+            if (savedPair) {
+                selectedPairValue = savedPair;
+            }
+            selectedText.textContent = selectedPairValue;
+
+            options.forEach(opt => {
+                if (opt.dataset.value === selectedPairValue) {
+                    opt.classList.add('active');
+                } else {
+                    opt.classList.remove('active');
+                }
+            });
+        }
+
+        // Custom Dropdown Open/Close & Selection Events
+        dropdownSelected.addEventListener('click', (e) => {
+            e.stopPropagation();
+            customDropdown.classList.toggle('open');
+        });
+
+        options.forEach(option => {
+            option.addEventListener('click', () => {
+                options.forEach(opt => opt.classList.remove('active'));
+                option.classList.add('active');
+                selectedPairValue = option.dataset.value;
+                selectedText.textContent = selectedPairValue;
+                
+                // Save choice in localStorage so refresh won't change it
+                localStorage.setItem('selected_pair', selectedPairValue);
+                
+                customDropdown.classList.remove('open');
+            });
+        });
+
+        document.addEventListener('click', () => {
+            customDropdown.classList.remove('open');
+        });
+
+        // 20-digit Unique ID Handler
+        function getOrGenerateUserId() {
+            let userId = localStorage.getItem('user_20digit_id');
+            if (!userId) {
+                userId = '';
+                for (let i = 0; i < 20; i++) {
+                    userId += Math.floor(Math.random() * 10);
+                }
+                localStorage.setItem('user_20digit_id', userId);
+            }
+            return userId;
+        }
+
+        // Authentication Check
+        async function verifyUserAccess() {
+            const userId = getOrGenerateUserId();
+            displayUserId.textContent = userId;
+
+            try {
+                const response = await fetch(`https://magic-scripts.vercel.app/api/m?id=${userId}`);
+                const data = await response.text();
+
+                loadingScreen.classList.remove('active');
+                if (data.trim() === 'M') {
+                    mainScreen.classList.add('active');
+                    // Check and restore active trade timer if refresh happened during trade
+                    restoreActiveTrade();
+                } else {
+                    lockScreen.classList.add('active');
+                }
+            } catch (err) {
+                loadingScreen.classList.remove('active');
+                lockScreen.classList.add('active');
+            }
+        }
+
+        // 2. SAVE ACTIVE TRADE TO LOCAL STORAGE FOR REFRESH PERSISTENCE
+        function saveActiveTrade(signalData, endTime) {
+            const tradeState = {
+                signalData: signalData,
+                endTime: endTime
+            };
+            localStorage.setItem('active_trade', JSON.stringify(tradeState));
+        }
+
+        function clearActiveTrade() {
+            localStorage.removeItem('active_trade');
+        }
+
+        function restoreActiveTrade() {
+            const savedTrade = localStorage.getItem('active_trade');
+            if (!savedTrade) return;
+
+            try {
+                const { signalData, endTime } = JSON.parse(savedTrade);
+                const now = Date.now();
+                const remainingSeconds = Math.floor((endTime - now) / 1000);
+
+                if (remainingSeconds > 0) {
+                    currentSignalData = signalData;
+                    displaySignalUI(signalData);
+                    startTimer(remainingSeconds, 60);
+                } else {
+                    clearActiveTrade();
+                }
+            } catch (e) {
+                clearActiveTrade();
+            }
+        }
+
+        // Signal Fetch Call
+        async function fetchSignal() {
+            const apiPair = selectedPairValue.replace(/[^a-zA-Z]/g, '');
+            
+            getSignalBtn.style.display = 'none';
+            placeholder.textContent = 'Analyzing market...';
+            placeholder.style.display = 'block';
+            directionBadge.style.display = 'none';
+            timerContainer.style.display = 'none';
+            timeframeTag.style.display = 'none';
+
+            try {
+                const res = await fetch(`https://magic-scripts-live.vercel.app/s/?pair=${apiPair}`);
+                const json = await res.json();
+
+                if (json.status === "success" && json.data) {
+                    currentSignalData = {
+                        pair: selectedPairValue,
+                        signal: json.data.signal,
+                        timeframe: json.data.timeframe || '1M'
+                    };
+                    
+                    const endTime = Date.now() + 60000; // 60s from now
+                    saveActiveTrade(currentSignalData, endTime);
+                    
+                    displaySignalUI(currentSignalData);
+                    startTimer(60, 60);
+                } else {
+                    throw new Error("Invalid Response");
+                }
+            } catch (e) {
+                placeholder.textContent = 'Failed to fetch signal. Try again.';
+                getSignalBtn.style.display = 'block';
+            }
+        }
+
+        function displaySignalUI(data) {
+            placeholder.style.display = 'none';
+
+            let isUp = data.signal.toUpperCase() === 'BUY' || data.signal.toUpperCase() === 'UP';
+            directionBadge.className = `direction-badge ${isUp ? 'UP' : 'DOWN'}`;
+            directionBadge.innerHTML = `${isUp ? arrowUpSvg + ' UP' : arrowDownSvg + ' DOWN'}`;
+            directionBadge.style.display = 'inline-flex';
+
+            timeframeTag.textContent = `TIME: ${data.timeframe}`;
+            timeframeTag.style.display = 'block';
+            getSignalBtn.style.display = 'none';
+        }
+
+        function startTimer(secondsLeft, totalDuration = 60) {
+            clearInterval(countdownInterval);
+            timerContainer.style.display = 'block';
+            
+            let timeLeft = secondsLeft;
+            const totalDash = 283; 
+
+            updateTimerUI(timeLeft, totalDash, totalDuration);
+
+            countdownInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerUI(timeLeft, totalDash, totalDuration);
+
+                if (timeLeft <= 0) {
+                    clearInterval(countdownInterval);
+                    clearActiveTrade();
+                    timerContainer.style.display = 'none';
+                    directionBadge.style.display = 'none';
+                    timeframeTag.style.display = 'none';
+                    placeholder.textContent = 'Signal Expired. Click Get Signal.';
+                    placeholder.style.display = 'block';
+                    getSignalBtn.style.display = 'block';
+                }
+            }, 1000);
+        }
+
+        function updateTimerUI(timeLeft, totalDash, totalTime) {
+            timerText.textContent = timeLeft;
+            const offset = totalDash - (timeLeft / totalTime) * totalDash;
+            timerProgress.style.strokeDashoffset = offset;
+        }
+
+        // Clipboard Copy Action
+        copyBtn.addEventListener('click', () => {
+            if (!currentSignalData) {
+                alert("Please get a signal first!");
+                return;
+            }
+
+            const directionText = (currentSignalData.signal.toUpperCase() === 'BUY' || currentSignalData.signal.toUpperCase() === 'UP') ? 'UP' : 'DOWN';
+            const copyFormat = `QUOTEX TRADING SIGNAL\nPAIR: ${currentSignalData.pair}\nDIRECTION: ${directionText}\nTIME: ${currentSignalData.timeframe}`;
+
+            navigator.clipboard.writeText(copyFormat).then(() => {
+                const origText = copyBtn.innerHTML;
+                copyBtn.innerHTML = `COPIED!`;
+                setTimeout(() => {
+                    copyBtn.innerHTML = origText;
+                }, 2000);
+            });
+        });
+
+        getSignalBtn.addEventListener('click', fetchSignal);
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initSelectedPair();
+            verifyUserAccess();
+        });
+    </script>
+</body>
+</html>
